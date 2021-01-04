@@ -1,0 +1,16 @@
+adjacency	number	species
+$@100b	2	PS_postWGD_ancestor
+$@125a	2	PS_postWGD_ancestor_PR
+$@129b	2	PS_postWGD_ancestor_PR
+$@130b	2	PS_postWGD_ancestor_PR
+$@98b	2	PS_postWGD_ancestor_PR
+100a@115a	2	PS_postWGD_ancestor
+102a@118b	2	PS_postWGD_ancestor_PR
+103b@135a	2	PS_postWGD_ancestor_PR
+107a@97b	2	PS_postWGD_ancestor_PR
+108b@118a	2	PS_postWGD_ancestor_PR
+110b@137b	2	PS_postWGD_ancestor_PR
+112a@113b	2	PS_postWGD_ancestor
+117a@97a	2	PS_postWGD_ancestor_PR
+121a@135b	2	PS_postWGD_ancestor_PR
+123a@128a	2	PS_postWGD_ancestor_PR
