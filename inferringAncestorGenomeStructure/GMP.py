@@ -11,7 +11,6 @@ class GMP:
     def __init__(self, adjacency_file, species_list):
         self.species_list = species_list
         self.adjacency_file = adjacency_file
-        # 观测的值向量，邻接的对应名字，邻接的分区range信息，邻接的对称信息，对角信息，矩阵的列名信息
         self.__observation_adjacency_vectors_value, \
         self.__adjacency_name, \
         self.__vector_range_value, \
@@ -90,8 +89,8 @@ class GMP:
         evaluation_list.to_csv(outdir + 'adjacencies_evaluation.xls', sep='\t')
 
     def __building_compress_calculation_matrix(self):
-        adjacency_relations = []  # 保存邻接关系
-        matrix_items = []  # 矩阵的列名
+        adjacency_relations = []
+        matrix_items = []
         with open(self.adjacency_file) as af:
             while True:
                 adjacency = []
@@ -109,17 +108,13 @@ class GMP:
                     index += 2
                 adjacency_relations.append(adjacency)
         matrix_items = sorted(matrix_items)
-        # 先构建大矩阵，
-        # 然后生成邻接值向量
-        # 表示每个行每个值包括的邻接对的向量，
-        # 同时记录对称位置向量，
-        # 记录每个项起止位置的向量
-        adjacency_matrix = {}  # 创建初始邻接矩阵
+
+        adjacency_matrix = {}
         for i in matrix_items:
             adjacency_matrix[i] = {}
             for j in matrix_items:
                 adjacency_matrix[i][j] = 0
-        observation_adjacency_matrixs = []  # 储存邻接矩阵信息 包括文件内的全部矩阵
+        observation_adjacency_matrixs = []
         for i in adjacency_relations:
             observation_adjacency_matrix = copy.deepcopy(adjacency_matrix)
             for j in i:
@@ -127,8 +122,7 @@ class GMP:
                 observation_adjacency_matrix[j[1]][j[0]] += 1
             observation_adjacency_matrixs.append(observation_adjacency_matrix)
 
-        # 每个端点的邻接表格
-        adjacency_table = {}  # 保存每个endpoint可能的候选，初始都是0
+        adjacency_table = {}
         for i in matrix_items:
             if i == '$':
                 union_items = []
@@ -146,9 +140,8 @@ class GMP:
             for j in union_items:
                 adjacency_table[i][j] = 0
 
-        # 分区
-        range_vector = {}  # 记录起始终止的位置信息
-        adjacency_vector = {}  # 生成邻接表，每个表示一个邻接，按照endpoint排列，由item_vector记录范围信息
+        range_vector = {}
+        adjacency_vector = {}
         start = 0
         count = 0
         for i in adjacency_table.keys():
@@ -163,18 +156,16 @@ class GMP:
             range_vector[i].append(end)
             start = end
 
-        # 对称vector，表示对称点的位置
         symmetry_vector = {}
         for i in adjacency_vector.keys():
             key = i.split('@')
             key_sym = key[1] + '@' + key[0]
             symmetry_vector[i] = adjacency_vector[key_sym]
 
-        # 清空adjacency_vector
         empty_adjacency_vector = {}
         for i in adjacency_vector:
             empty_adjacency_vector[i] = 0
-        observation_adjacency_vectors = []  # 生成每个的矩阵的列表
+        observation_adjacency_vectors = []
         for i in observation_adjacency_matrixs:
             observation_adjacency_vector = copy.deepcopy(empty_adjacency_vector)
             for j in i.keys():
@@ -184,24 +175,23 @@ class GMP:
                         observation_adjacency_vector[key] += i[j][k]
             observation_adjacency_vectors.append(observation_adjacency_vector)
 
-        # 数值向量化
-        adjacency_name = list(observation_adjacency_vectors[0].keys())  # 保存每个元素的意义
-        observation_adjacency_vectors_value = []  # 转变为向量形式，不使用字典存储，名字使用adjacency_name保存
+        adjacency_name = list(observation_adjacency_vectors[0].keys())
+        observation_adjacency_vectors_value = []
         for i in observation_adjacency_vectors:
             observation_adjacency_vector_value = []
             for j in i.keys():
                 observation_adjacency_vector_value.append(i[j])
             observation_adjacency_vectors_value.append(observation_adjacency_vector_value)
 
-        vector_range_value = []  # 将字典存储的范围信息转换为列表
+        vector_range_value = []
         for i in range_vector.keys():
             ranges = range_vector[i]
             vector_range_value.append(ranges)
-        vector_symmetry_value = []  # 列表化对称信息
+        vector_symmetry_value = []
         for i in symmetry_vector.keys():
             vector_symmetry_value.append(symmetry_vector[i])
 
-        diagonal_value = []  # 如果对称位置是自己则是对角为，记录对角位情况
+        diagonal_value = []
         for i in range(len(vector_symmetry_value)):
             if vector_symmetry_value[i] == i:
                 diagonal_value.append(i)
@@ -216,7 +206,6 @@ class GMP:
     def optimization(self):
         try:
             self.__m = gp.Model()
-            # 定义布尔变量
             ancestor = self.__m.addVars(self.__variable_number, vtype=GRB.BINARY, name="ancestor")
             self.__m.update()
             self.__m.setObjective(gp.quicksum(
@@ -263,32 +252,3 @@ class GMP:
         adjacency_matrix.readFromMatrix(self.__adjacency_matrix)
         return adjacency_matrix
 
-
-# def main():
-#     dirctionary = 'D:/InferAncestorGenome/Brassica/'
-#     file = ['bol.block.filter.2',
-#             'nigra.block.filter.2',
-#             'rapa.block.filter.2']
-#     adj_file = 'D:/InferAncestorGenome/Brassica/' \
-#                'bol_nigra_rapa.adj'
-#     species_list = ['bol', 'nigra', 'rapa']
-#     filelist = []
-#     for i in file:
-#         filelist.append(dirctionary + i)
-#     transformToAdjacency(filelist, adj_file)
-#     output_sequence_file = 'D:/InferAncestorGenome/Brassica/' \
-#                            'an.block'
-#     output_matrix_file = 'D:/InferAncestorGenome/Brassica/' \
-#                            'an.matrix.xls'
-#     gmp = GMP(adj_file, species_list)
-#     gmp.optimization()
-#     adjacency_matrix = gmp.ancestor_adjacency_matrix()
-#     evaluation_dir = 'D:/InferAncestorGenome/Brassica/'
-#     gmp.evaluation_ancestor_adjacencies(evaluation_dir)
-#     print(adjacency_matrix.adjacency_matrix)
-#     adjacency_matrix.assemble()
-#     adjacency_matrix.out_assembly(output_sequence_file)
-#
-#
-# if __name__ == '__main__':
-#     main()

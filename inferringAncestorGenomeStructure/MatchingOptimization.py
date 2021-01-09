@@ -2,11 +2,9 @@ import gurobipy as gp
 from gurobipy import *
 import pandas as pd
 import numpy as np
-import copy
 
 class MatchingOptimization:
 
-    # 输入当前观测的维度信息，以及比例关系
     def __init__(self,file_list,matching_dim1 = 4,matching_dim2 = 2,relation1 = 1,relation2 = 2,self_match = False):
         self.__endpoint_lists = []
         self.__matching_dim1 = matching_dim1
@@ -22,11 +20,11 @@ class MatchingOptimization:
             compress_adjacency_matrix, endpoint_list = self.__build_assumed_matrix(adjacency_list)
             self.__compress_adjacency_matrixs.append(compress_adjacency_matrix)
             self.__endpoint_lists.append(endpoint_list)
-        # 寻找底数一致的邻接，如果含有0，则只看非0项
+
         candidate_compress_adjacency_matrix = self.__compress_adjacency_matrixs[0]
         guided_compress_adjacency_matrix = self.__compress_adjacency_matrixs[1]
         candidate_adjacency_index = self.__endpoint_lists[0]
-        self.__match_pairs = [] # 记录候选匹配的数据集
+        self.__match_pairs = []
 
         for i in candidate_compress_adjacency_matrix:
             match_pair = []
@@ -56,7 +54,6 @@ class MatchingOptimization:
     def optimization(self):
         try:
             self.__m = gp.Model()
-            # 定义整数，需要添加范围约束
             match_matrix = self.__m.addVars(self.__k,
                                             self.__matching_dim1,
                                             self.__matching_dim2,
@@ -72,7 +69,7 @@ class MatchingOptimization:
                                         j[1] % self.__matching_dim2] + 1 - i[0][3])
                 for i in self.__match_pairs for j in i[1]
             ), GRB.MAXIMIZE)
-            # match矩阵，行加和为1，列加和为2
+
             self.__m.addConstrs((
                 gp.quicksum(match_matrix[i, j, l] for l in range(self.__matching_dim2)) == self.__relation1
                 for i in range(self.__k)
@@ -84,13 +81,13 @@ class MatchingOptimization:
                 for j in range(self.__matching_dim2)), name='col_unique'
             )
             if self.__self_match:
-                # 对角线不能为1
+
                 self.__m.addConstrs((
                     match_matrix[i,j,j] == 0
                     for i in range(self.__k)
                     for j in range(self.__matching_dim1)), name='diagonal'
                 )
-                # 矩阵对称
+
                 self.__m.addConstrs((
                     match_matrix[i, j, k] == match_matrix[i, k, j]
                     for i in range(self.__k)
@@ -123,24 +120,24 @@ class MatchingOptimization:
                 index.append(item[0][:-1] + '@' + str(j + 1))
             match = pd.DataFrame(result[i], columns=column, index=index)
             match_relation = match.to_dict()
-            for j in match_relation.keys(): # 列即dim2
-                for k in match_relation[j].keys(): # 行dim1
+            for j in match_relation.keys():
+                for k in match_relation[j].keys():
                     if match_relation[j][k] == 1:
-                        self.__match_relations[k] = j # key 是dim1 value 是dim2
+                        self.__match_relations[k] = j
 
     def output_matching_relation(self,outfile):
         outfile = open(outfile, 'w')
         for i in self.__match_relations.keys():
             key1 = i.split('@')
             key2 = self.__match_relations[i].split('@')
-            # block dim1 dim2序号
+            # block dim1 dim2
             outfile.write(key1[0] + ' ' + key1[1] + ' ' + key2[1] + '\n')
         outfile.close()
 
     def output_new_sequence(self,candidate_file,guided_file):
         transform_block_orders = []
         for i in self.__relabel_block_sequences[0]:
-            transform_block_order = [] # 将第一个文件，向第二个转变
+            transform_block_order = []
             chr_type = i[0]
             for j in i[1:]:
                 if j.startswith('-'):
@@ -173,7 +170,6 @@ class MatchingOptimization:
         guided_file.close()
 
     def __assumed_block_label(self, file):
-        # 添加读取cycle部分
         adjacency_list = []
         block_objects = {}
         relabel_block_order = []
@@ -272,10 +268,8 @@ class MatchingOptimization:
             for j in range(len(adjacency_matrix[i])):
                 if adjacency_matrix[i][j] == 1:
                     adjacency = [endpoint_list[i], endpoint_list[j]]
-                    # 对应 i，j也要排序
                     adjacency = sorted(adjacency)
                     if adjacency[0] == endpoint_list[i] and adjacency[1] == endpoint_list[j]:
-                        # 保存不包括 $ 符号，意味着index计算不从$开始，从第一个不为$的开始
                         if i == 0 and j == 0:
                             compress_adjacency_matrix.append([i, j, 0, 0, adjacency])
                         if i == 0 and j != 0:
@@ -296,24 +290,4 @@ class MatchingOptimization:
         return compress_adjacency_matrix, endpoint_list
 
 
-# def main():
-#     dir = 'D:/InferAncestorGenome/' \
-#           'simulatiedData/simpleSimulation/' \
-#           'MultiGGHP/divergence_change/threeStrategyTest2/'
-#     sp1 = 'species.sequence.7'
-#     sp2 = 'species.sequence.9'
-#     outdir = 'D:/InferAncestorGenome/simulatiedData/' \
-#              'simpleSimulation/MultiGGHP/' \
-#              'divergence_change/threeStrategyTest2/1/'
-#     filelist = [dir + sp2, dir + sp1]
-#     mo = MatchingOptimization(filelist, matching_dim1=8, matching_dim2=4,
-#                               relation1=1, relation2=2)
-#     mo.optimization()
-#     mo.matching_relation()
-#     mo.output_matching_relation(outdir + 'matching.txt')
-#     mo.output_new_sequence(outdir + sp2 + '.matching', outdir + sp1 + '.matching')
-#
-#
-# if __name__ == '__main__':
-#     main()
 

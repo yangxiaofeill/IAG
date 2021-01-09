@@ -45,9 +45,7 @@ def read_block(file):
 
 class GeneContentBuilder:
 
-    # 处理dup，处理同源性默认至少两个物种存在
     def __init__(self,block_sequence,species,homo_threshold = 2):
-        # 处理序列的名字和代号
         self.__non_dup_sequence = block_sequence
         self.__non_dup_sequence = self.__process_duplication()
         self.__non_dup_homo_sequence = self.__process_homology_species(species,homo_threshold)
@@ -58,7 +56,6 @@ class GeneContentBuilder:
         print('process dup')
         filter_dup_block_sequence = {}
         for i in self.__non_dup_sequence.keys():
-            # 对每个序列清除内部dup的
             filter_dup_block_sequence[i] = []
             for j in self.__non_dup_sequence[i].keys():
                 filter_gene_familly = []
@@ -175,9 +172,7 @@ class GeneContentBuilder:
         DG.add_weighted_edges_from(edges)
         topological = []
         candidate = {}
-        # 先拓扑排序一下，如果不存在可以的点，选择一个初始点，初始点设定为出现位置平均最靠前
         while True:
-            # 完成查找拓扑序，删除入度为0的节点，将后缀加入候选
             while True:
                 ok = 0
                 degree = list(DG.in_degree)
@@ -195,17 +190,14 @@ class GeneContentBuilder:
                     break
             if len(degree) == 0:
                 break
-            # 分情况：
-            # 如果候选中为空，则选定一个起点然后删掉它，将它的下游加入，
-            # 否则正常执行
-            if len(candidate.keys()) == 0:  # 选择一个初始点，初始点设定为出现位置平均最靠前
+
+            if len(candidate.keys()) == 0:
                 min_node = ''
                 min_weight = 100000
                 for i in gene_rank.keys():
                     if gene_rank[i] < min_weight:
                         min_node = i
                         min_weight = gene_rank[i]
-                # 删掉这个节点新增候选
                 topological.append(min_node)
                 for i in DG[min_node]:
                     if i in candidate.keys():
@@ -214,15 +206,12 @@ class GeneContentBuilder:
                         candidate[i] = DG[min_node][i]
                 DG.remove_node(min_node)
             else:
-                # 统一清理
                 new_candidate = {}
                 for i in candidate.keys():
                     if i not in topological:
                         new_candidate[i] = candidate[i]
                 candidate = new_candidate
                 # print(degree)
-                # 选取候选节点中权重比最大的节点，同分全选共同加入
-                # 删除此节点全部的入度
                 max_weight = -1
                 max_weight_node = []
                 for i in candidate.keys():
@@ -240,7 +229,6 @@ class GeneContentBuilder:
                     next = DG[i]
                     for j in next.keys():
                         if j not in topological:
-                            # 发现已经在候选中的情况，累加起来继续后续判断
                             if j in candidate.keys():
                                 candidate[j]['weight'] = candidate[j]['weight'] + next[j]['weight']
                             else:
@@ -262,12 +250,10 @@ class GeneContentBuilder:
                 sequence.append(j[0])
             edges, gene_count, gene_rank = self.__build_edges(sequence)
             topological = self.__find_topological(edges, gene_count, gene_rank)
-            e_count = 0
             new_sequence = []
             new_sequence_name = []
             for j in range(len(topological)):
                 if topological[j] == 'E':
-                    e_count = j + 1
                     continue
                 new_sequence.append(topological[j])
                 new_sequence_name.append(self.__block_dictionary[i][topological[j]][-1])
@@ -305,161 +291,10 @@ class GeneContentBuilder:
     def get_ancestor_sequence(self):
         return self.__ancestor_sequence
 
-# def main():
-#     file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/drimm_output/block_location.txt'
-#     block_location = pd.read_csv(file, sep='\t', header=None)
-#     block_location = np.asarray(block_location)
-#     block = {}
-#     # 获取原始block位置的信息
-#     for i in block_location:
-#         index = i[5]
-#         index = index.split('@')
-#         if index[0].startswith('-'):
-#             if index[0][1:] not in block.keys():
-#                 block[index[0][1:]] = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': [], '7': []}
-#                 block[index[0][1:]][index[1]].append([i[0], i[1], i[2], i[4], index[2], index[0][0]])
-#             else:
-#                 block[index[0][1:]][index[1]].append([i[0], i[1], i[2], i[4], index[2], index[0][0]])
-#         else:
-#             if index[0] not in block.keys():
-#                 block[index[0]] = {'1': [], '2': [], '3': [], '4': [], '5': [], '6': [], '7': []}
-#                 block[index[0]][index[1]].append([i[0], i[1], i[2], i[4], index[2], '+'])
-#             else:
-#                 block[index[0]][index[1]].append([i[0], i[1], i[2], i[4], index[2], '+'])
-#     select_blocks = []
-#     # 过滤掉含有hook基因太少的，质量差的block
-#     for i in block.keys():
-#         anchor_genes = {}
-#         for j in block[i].keys():
-#             for k in block[i][j]:
-#                 if k[4] not in anchor_genes.keys():
-#                     anchor_genes[k[4]] = 1
-#                 else:
-#                     anchor_genes[k[4]] += 1
-#         anchor_genes_count = 0
-#         for j in anchor_genes.keys():
-#             if anchor_genes[j] == 7:
-#                 anchor_genes_count += 1
-#         if anchor_genes_count < 10:
-#             continue
-#         select_blocks.append(i)
-#
-#     # 原始序列
-#     ori_sequences = {}
-#     directory = 'D:/InferAncestorGenome/Ztestfile/buildSequence/sequence/'
-#     sequences_file = ['DCW_genome.all.seqence',
-#                       'HN1_genome.all.seqence',
-#                       'YMR_genome.all.seqence']
-#     sequences_name_file = ['DCW_genome.all.seqence.genename',
-#                            'HN1_genome.all.seqence.genename',
-#                            'YMR_genome.all.seqence.genename']
-#     for i in range(len(sequences_file)):
-#         ori_sequences[sequences_file[i][:3]] = []
-#         sequence = read_sequence(directory + sequences_file[i])
-#         sequence_genename = read_sequence(directory + sequences_name_file[i])
-#         ori_sequences[sequences_file[i][:3]].append(sequence)
-#         ori_sequences[sequences_file[i][:3]].append(sequence_genename)
-#
-#     block_range = {}
-#     for i in block.keys():
-#         if i not in select_blocks:
-#             continue
-#         block_range[i] = {}
-#         for j in block[i].keys():
-#             maxrange = -1
-#             minrange = 2000000
-#             chrom = ''
-#             species = ''
-#             stand = ''
-#             for k in block[i][j]:
-#                 if k[2] > maxrange:
-#                     maxrange = k[2]
-#                 if k[2] < minrange:
-#                     minrange = k[2]
-#                 chrom = k[1]
-#                 stand = k[5]
-#                 species = k[0]
-#             block_range[i][int(j)] = [species, chrom, minrange, maxrange, stand]
-#
-#     block_sequence = {}
-#     for i in block_range.keys():
-#         block_sequence[i] = {}
-#         for j in block_range[i].keys():
-#             block_sequence[i][j] = []
-#             info = block_range[i][j]
-#             if info[4] == '+':
-#                 block_sequence[i][j].append(ori_sequences[info[0]][0][info[1] - 1][info[2]:info[3] + 1])
-#                 block_sequence[i][j].append(ori_sequences[info[0]][1][info[1] - 1][info[2]:info[3] + 1])
-#             else:
-#                 block_sequence[i][j].append(ori_sequences[info[0]][0][info[1] - 1][info[2]:info[3] + 1][::-1])
-#                 block_sequence[i][j].append(ori_sequences[info[0]][1][info[1] - 1][info[2]:info[3] + 1][::-1])
-#
-#     dcw_block_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/' \
-#                      'inferringAncestorGeneomeStructure/' \
-#                      '01build_dcw_pre_dup_ancestor/DCW.filter.block.matching'
-#     hn1_block_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/' \
-#                      'inferringAncestorGeneomeStructure/' \
-#                      '01build_dcw_pre_dup_ancestor/HN1.filter.block.matching'
-#     dcw_block = read_block(dcw_block_file)
-#     hn1_block = read_block(hn1_block_file)
-#
-#     # 按照匹配分堆，将尾号一致的分到一个集合
-#     dan_copy1_sequence = {}
-#     dan_copy2_sequence = {}
-#     for i in dcw_block.keys():
-#         dan_copy1_sequence[i] = {}
-#         dan_copy2_sequence[i] = {}
-#         for j in dcw_block[i]:
-#             if j[1] == '1':
-#                 dan_copy1_sequence[i][j[0]] = block_sequence[i][j[0]]
-#             else:
-#                 dan_copy2_sequence[i][j[0]] = block_sequence[i][j[0]]
-#     for i in hn1_block.keys():
-#         for j in hn1_block[i]:
-#             if j[1] == '1':
-#                 dan_copy1_sequence[i][j[0] + 4] = block_sequence[i][j[0] + 4]
-#             else:
-#                 dan_copy2_sequence[i][j[0] + 4] = block_sequence[i][j[0] + 4]
-#
-#     species = {1: 'dcw', 2: 'dcw', 3: 'hn1'}
-#     homo_threshold = 2
-#     dan_copy1_gene_content = GeneContentBuilder(dan_copy1_sequence,species,homo_threshold)
-#     print(dan_copy1_gene_content.get_ancestor_sequence())
-#     dan_copy1_synteny_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/dan_copy1_synteny.txt'
-#     dan_copy1_synteny_name_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/dan_copy1_synteny.name.txt'
-#     support = 3
-#     block_suffix = '_1'
-#     dan_copy1_gene_content.out_synteny_file(dan_copy1_synteny_file,dan_copy1_synteny_name_file,support,block_suffix)
-#
-#     dan_copy2_gene_content = GeneContentBuilder(dan_copy2_sequence,species,homo_threshold)
-#     print(dan_copy2_gene_content.get_ancestor_sequence())
-#     dan_copy2_synteny_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/dan_copy2_synteny.txt'
-#     dan_copy2_synteny_name_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/dan_copy2_synteny.name.txt'
-#     support = 3
-#     block_suffix = '_2'
-#     dan_copy2_gene_content.out_synteny_file(dan_copy2_synteny_file, dan_copy2_synteny_name_file, support, block_suffix)
-#
-#     print('---------------han-------------')
-#     # 6个重建一个
-#     han_sequence = {}
-#     for i in block_sequence.keys():
-#         han_sequence[i] = {}
-#         for j in range(6):
-#             han_sequence[i][j + 1] = block_sequence[i][j + 1]
-#     # 保守要求在两个物种中存在
-#     species = {1: 'dcw', 2: 'dcw', 3: 'dcw', 4: 'dcw', 5: 'hn1', 6: 'hn1'}
-#     homo_threshold = 2
-#     han_gene_content = GeneContentBuilder(han_sequence, species, homo_threshold)
-#     print(han_gene_content.get_ancestor_sequence())
-#     han_synteny_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/han_synteny.txt'
-#     han_synteny_name_file = 'D:/InferAncestorGenome/Ztestfile/buildSequence/synteny/han_synteny.name.txt'
-#     support = 6
-#     block_suffix = ''
-#     dan_copy2_gene_content.out_synteny_file(han_synteny_file, han_synteny_name_file, support, block_suffix)
-#
-#
-# if __name__ == '__main__':
-#     main()
+
+
+
+
 
 
 

@@ -5,7 +5,7 @@ from util.transformToAdjacency import transformToAdjacency
 from inferringAncestorGenomeStructure.GMP import GMP
 from inferringGeneContent.GeneContentBuilder import *
 
-
+# need to replace
 in_workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/inputFiles/'
 out_workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/outputFiles/'
 # 1. DGGHP
@@ -104,7 +104,7 @@ adjacency_matrix.output(output_matrix_file)
 adjacency_matrix.assemble()
 adjacency_matrix.out_assembly(output_sequence_file,remove_bar=False)
 
-# 2、构建gene content
+
 def builderGeneContent():
     multi_synteny_file = in_workdir + 'multiblock_synteny.txt'
     multi_synteny_name_file = in_workdir + 'multiblock_synteny.name.txt'
@@ -135,7 +135,7 @@ def builderGeneContent():
     dcw_block = read_block(dcw_block_file)
     hn1_block = read_block(hn1_block_file)
 
-    # 按照匹配分堆，将尾号一致的分到一个集合
+
     dan_copy1_sequence = {}
     dan_copy2_sequence = {}
     for i in dcw_block.keys():
@@ -173,13 +173,13 @@ def builderGeneContent():
     dan_copy2_gene_content.out_synteny_file(dan_copy2_synteny_file, dan_copy2_synteny_name_file, support, block_suffix)
     dan_copy2_gene_content.out_block_dictionary(dan_copy2_block_gene_name)
     print('---------------han-------------')
-    # 6个重建一个
+
     han_sequence = {}
     for i in block_sequence.keys():
         han_sequence[i] = {}
         for j in range(6):
             han_sequence[i][j + 1] = block_sequence[i][j + 1]
-    # 保守要求在两个物种中存在
+
     species = {1: 'PT', 2: 'PT', 3: 'PT', 4: 'PT', 5: 'PS', 6: 'PS'}
     homo_threshold = 2
     han_gene_content = GeneContentBuilder(han_sequence, species, homo_threshold)
