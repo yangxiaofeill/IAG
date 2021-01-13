@@ -207,15 +207,28 @@ class GMP:
         try:
             self.__m = gp.Model()
             ancestor = self.__m.addVars(self.__variable_number, vtype=GRB.BINARY, name="ancestor")
+
+            z = self.__m.addVars(len(self.__observation_adjacency_vectors_value),
+                                 (self.__variable_number),
+                                 vtype=GRB.INTEGER, name="z")
+
+            l = self.__m.addVars(len(self.__observation_adjacency_vectors_value),
+                                 (self.__variable_number),
+                                 vtype=GRB.INTEGER, lb=-1000, name="l")
+
             self.__m.update()
-            self.__m.setObjective(gp.quicksum(
-                (ancestor[j + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[i][j + self.__vector_range_value[0][1]]) *
-                (ancestor[j + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[i][j + self.__vector_range_value[0][1]])
-                for j in range(self.__variable_number - self.__vector_range_value[0][1])
-                for i in range(len(self.__observation_adjacency_vectors_value))
-            ), GRB.MINIMIZE)
+            self.__m.setObjective(gp.quicksum(z[i, j]
+                                              for j in range(self.__variable_number)
+                                              for i in range(len(self.__observation_adjacency_vectors_value))),
+                                  GRB.MINIMIZE)
+
+            for i in range(len(self.__observation_adjacency_vectors_value)):
+                for j in range(self.__variable_number):
+                    self.__m.addConstr((l[i, j] == (ancestor[j] -
+                                 self.__observation_adjacency_vectors_value[i][j])),
+                                       name='target_pre' + str(i) + str(j))
+                    self.__m.addConstr((z[i, j] == abs_(l[i,j])),
+                                       name='target'+str(i)+str(j))
 
             self.__m.addConstrs((ancestor[i] - ancestor[self.__vector_symmetry_value[i]] == 0
                                  for i in range(self.__variable_number)), name='symmetry')
@@ -237,7 +250,8 @@ class GMP:
     def ancestor_adjacency_matrix(self):
         result = []
         for v in self.__m.getVars():
-            result.append(v.x)
+            if v.Varname.startswith('ancestor'):
+                result.append(v.x)
         self.__adjacency_matrix = {}
         for i in self.__matrix_items:
             self.__adjacency_matrix[i] = {}

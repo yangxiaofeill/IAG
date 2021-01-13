@@ -37,7 +37,6 @@ ggap.evaluation_ancestor_adjacencies(out_workdir + '1_PT_pre/')
 adjacency_matrix.output(output_matrix_file)
 adjacency_matrix.assemble()
 adjacency_matrix.out_assembly(output_sequence_file,remove_bar=False)
-
 # 2. DGMP
 def doublePR(infile,outfile):
     outfile = open(outfile,'w')

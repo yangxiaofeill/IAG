@@ -215,6 +215,7 @@ class GGAP:
         for i in range(len(vector_symmetry_value)):
             if vector_symmetry_value[i] == i:
                 diagonal_value.append(i)
+
         return observation_adjacency_vectors_value, \
                adjacency_name, \
                vector_range_value, \
@@ -225,23 +226,33 @@ class GGAP:
 
     def optimization(self):
         try:
-            self.__alpha = self.__duptype - 1
             self.__m = gp.Model()
             ancestor = self.__m.addVars(self.__variable_number,
                                         vtype=GRB.BINARY, name="ancestor")
+            zd = self.__m.addVars(self.__variable_number,
+                                 vtype=GRB.INTEGER, name="zd")
+            ld = self.__m.addVars(self.__variable_number,
+                                 vtype=GRB.INTEGER,lb=-1000, name="ld")
+            zo = self.__m.addVars(self.__variable_number,
+                                  vtype=GRB.INTEGER, name="zo")
+            lo = self.__m.addVars(self.__variable_number,
+                                  vtype=GRB.INTEGER, lb=-1000, name="lo")
             self.__m.update()
+
             self.__m.setObjective(gp.quicksum(
-                self.__alpha *
-                (self.__duptype * ancestor[i + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[0][i + self.__vector_range_value[0][1]]) *
-                (self.__duptype * ancestor[i + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[0][i + self.__vector_range_value[0][1]]) +
-                (ancestor[i + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[1][i + self.__vector_range_value[0][1]]) *
-                (ancestor[i + self.__vector_range_value[0][1]] -
-                 self.__observation_adjacency_vectors_value[1][i + self.__vector_range_value[0][1]])
-                for i in range(self.__variable_number - self.__vector_range_value[0][1])
+                zd[i] + zo[i]
+                for i in range(self.__variable_number)
             ), GRB.MINIMIZE)
+
+            for i in range(self.__variable_number):
+                self.__m.addConstr((ld[i] == (self.__duptype * ancestor[i] - self.__observation_adjacency_vectors_value[0][i])),
+                                       name='ld' + str(i))
+                self.__m.addConstr((zd[i] == abs_(ld[i])),name='zd'+str(i))
+            for i in range(self.__variable_number):
+                self.__m.addConstr((lo[i] == (ancestor[i] - self.__observation_adjacency_vectors_value[1][i])),
+                                       name='lo' + str(i))
+                self.__m.addConstr((zo[i] == abs_(lo[i])),name='zo'+str(i))
+
 
             self.__m.addConstrs((
                 ancestor[i] - ancestor[self.__vector_symmetry_value[i]] == 0
@@ -273,7 +284,8 @@ class GGAP:
     def ancestor_adjacency_matrix(self):
         result = []
         for v in self.__m.getVars():
-            result.append(v.x)
+            if v.Varname.startswith('ancestor'):
+                result.append(v.x)
         self.__adjacency_matrix = {}
         for i in self.__matrix_items:
             self.__adjacency_matrix[i] = {}
