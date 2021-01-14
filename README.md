@@ -41,10 +41,10 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 
 ### outputFiles
 
-* 1_PT_pre: contains the pre-WGD-2 ancestor, using P. somniferum(PS) as outgroup genome and P. setigerum(PT) as duplicated genome. First, we used 4:2 MO to find which two block in PT corresponding to which one block in PS and then using GGAP(WGD) to infer. The result file is PT_preWGD_ancestor.block and matching relation is in matching_PT_PS.txt.
-* 2_PS_post: contains the post-WGD-1 ancestor, using doubled P. rhoeas(PR), P. somniferum(PS), and pre-WGD-2 ancestor(PT_preWGD_ancestor.block). First, we used 2:2 MO to find the block matching relation in three genome and then using GMP to infer. The result file is PS_postWGD_ancestor.block(PS_postWGD_ancestor.block.withbar) and matcing relation is in matching_PRdouble_PS.txt.
+* 1_PT_pre: contains the pre-WGD-2 ancestor, using P. somniferum (PS) as outgroup genome and P. setigerum (PT) as duplicated genome. First, we used 4:2 MO to find which two block in PT corresponding to which one block in PS and then using GGAP (WGD) to infer. The result file is PT_preWGD_ancestor.block and matching relation is in matching_PT_PS.txt.
+* 2_PS_post: contains the post-WGD-1 ancestor, using doubled P. rhoeas (PR), P. somniferum (PS), and pre-WGD-2 ancestor (PT_preWGD_ancestor.block). First, we used 2:2 MO to find the block matching relation in three genome and then using GMP to infer. The result file is PS_postWGD_ancestor.block (PS_postWGD_ancestor.block.withbar) and matcing relation is in matching_PRdouble_PS.txt.
 
-* 3_PS_pre: contains the pre-WGD-1 ancestor, using P. rhoeas(PR) and post-WGD-1 ancestor(PS_postWGD_ancestor.block). We used GGAP(WGD) to inder. The result file is PS_preWGD_ancestor.block.
+* 3_PS_pre: contains the pre-WGD-1 ancestor, using P. rhoeas (PR) and post-WGD-1 ancestor (PS_postWGD_ancestor.block). We used GGAP (WGD) to inder. The result file is PS_preWGD_ancestor.block.
 
 * 
 
