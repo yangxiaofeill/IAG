@@ -58,4 +58,6 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 ```
 han corresponds to PS_preWGD_ancestor.block and dan corresponds to PS_postWGD_ancestor.block.withbar.
 
+### pipline.py
+The python version workflow for inferring Papaver ancestor genomes.
 
