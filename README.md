@@ -21,10 +21,14 @@ networkx | 2.1 |
 
 inferringAncestorGenomeStructure
 Containing the source code of three inferring models, including:
-* GMP(genome median problem)
-Given some ordinary genome(with no WGD, one copy), finding the ancestor genome by minimizing the genomic distance.
-* GGAP(guided genome aliquoting problem)
-Given a duplicated genome(with a WGD or WGT, two or three copies) and a ordinary genome, finding pre-duplicated ancestor genome by minimizing the genomic distance.
-* MO(matcing optimaztion)
-Given two multi-duplicated genome, finding the block matcing relation by minimaizing the genomic distance.
+
+* GMP(genome median problem): Given some ordinary genome(with no WGD, one copy), finding the ancestor genome by minimizing the genomic distance.
+
+* GGAP(guided genome aliquoting problem): Given a duplicated genome(with a WGD or WGT, two or three copies) and a ordinary genome, finding pre-duplicated ancestor genome by minimizing the genomic distance.
+
+* MO(matcing optimaztion): Given two multi-duplicated genome, finding the block matcing relation by minimaizing the genomic distance.
+
+We built three integer programming model to solve above problems. All above optimization instances were solved with the GUROBI solver.
+
+inferringGeneContent
 
