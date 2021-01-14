@@ -33,6 +33,11 @@ We built three integer programming model to solve above problems. All above opti
 ### inferringGeneContent
 Containing the source code for inferring ancestor genome gene order. Each block contains multi-copies in sub current genomes and with some different gene indels and micro rearrangements. This step is intend to infer the possible ancestral gene order in ancestors. We used topological sorting with a greedy strategy. When the topological sorting removed nodes, we recorded their out-degree edges weight and used this weight as decision condition. When there is not node without in-degree edge (the number of in-degree is 0), we removed the node with maximal decision weight to break cycle and continue sorting to get the final order.
 
+### inputFiles
+
+* block files which is the block order and direction of three species. P. rhoeas(PR), P. somniferum(PS) and P. setigerum(PT).
+
+* multi-synteny files which is the block gene content in multi-copies with the homo gene ID and the gene name.
 
 
 
