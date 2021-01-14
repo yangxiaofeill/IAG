@@ -6,8 +6,9 @@ from inferringAncestorGenomeStructure.GMP import GMP
 from inferringGeneContent.GeneContentBuilder import *
 
 # need to replace
-in_workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/inputFiles/'
-out_workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/outputFiles/'
+workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/'
+in_workdir = workdir + 'inputFiles/'
+out_workdir = workdir + 'outputFiles/'
 # 1. DGGHP
 file = ['PT.filter.block','PS.filter.block']
 outcandidatefile = out_workdir + '1_PT_pre/PT.filter.block.matching'
@@ -37,6 +38,7 @@ ggap.evaluation_ancestor_adjacencies(out_workdir + '1_PT_pre/')
 adjacency_matrix.output(output_matrix_file)
 adjacency_matrix.assemble()
 adjacency_matrix.out_assembly(output_sequence_file,remove_bar=False)
+
 # 2. DGMP
 def doublePR(infile,outfile):
     outfile = open(outfile,'w')
