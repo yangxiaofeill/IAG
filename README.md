@@ -48,12 +48,14 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 
 * 4_block_gene_content: contains the inferred ancestor block gene content. 
 ```Bash
-han_synteny_ps.txt: pre-WGD-1 ancestor's block gene order. The number is homo gene ID.
+*_synteny_ps.txt: ancestor's block gene order. The number is homo gene ID.
 ```
 ```Bash
-han_synteny.name_ps.txt: pre-WGD-1 ancestor's block gene order with gene name.
+*_synteny.name_ps.txt: ancestor's block gene order with gene name.
 ```
 ```Bash
-han_synteny.genename_ps.txt: all gene name represent by same homo gene ID.
+*_synteny.genename_ps.txt: all gene name represent by same homo gene ID.
 ```
+han corresponds to PS_preWGD_ancestor.block and dan corresponds to PS_postWGD_ancestor.block.withbar.
+
 
