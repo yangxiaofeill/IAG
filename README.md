@@ -31,7 +31,9 @@ Containing the source code of three models for inferring ancestor genome structu
 We built three integer programming model to solve above problems. All above optimization instances were solved with the GUROBI solver.
 
 ### inferringGeneContent
-Containing the source code for inferring ancestor genome gene order. Each block contains multi-copies in sub current genomes. This step is intend to infer the possible ancestral gene order in ancestors.
+Containing the source code for inferring ancestor genome gene order. Each block contains multi-copies in sub current genomes and with some different gene indels and micro rearrangements. This step is intend to infer the possible ancestral gene order in ancestors. We used topological sorting with a greedy strategy. When the topological sorting removed nodes, we recorded their out-degree edges weight and used this weight as decision condition. When there is not node without in-degree edge (the number of in-degree is 0), we removed the node with maximal decision weight to break cycle and continue sorting to get the final order.
+
+
 
 
 
