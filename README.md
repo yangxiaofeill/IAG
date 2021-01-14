@@ -1,5 +1,5 @@
 # IAG for three Papaver species
-To figure out what genome structural changes occured to shape the present-day karyotypes of three Papaver species. We developed a novel bottom-up framework IAG (inferring ancestor genome) to reconstruct pre- and post-WGD-1 ancestors of Papaver genomes. This is a pipline only for Papaver species. And a more user-friendly version is being developed.
+To figure out what genome structural changes occured to shape the present-day karyotypes of three Papaver species. We developed a novel bottom-up framework IAG (inferring ancestor genome) to reconstruct pre- and post-WGD-1 ancestors of Papaver genomes. This is a pipline only for Papaver species. And a more user-friendly version and article are in developing.
 
 ## Dependencies
 python 3.6.4
@@ -19,8 +19,8 @@ networkx | 2.1 |
 
 ## Introductions
 
-inferringAncestorGenomeStructure
-Containing the source code of three inferring models, including:
+### inferringAncestorGenomeStructure
+Containing the source code of three models for inferring ancestor genome structures which are focusing on the block connection, including:
 
 * GMP(genome median problem): Given some ordinary genome(with no WGD, one copy), finding the ancestor genome by minimizing the genomic distance.
 
@@ -30,5 +30,9 @@ Containing the source code of three inferring models, including:
 
 We built three integer programming model to solve above problems. All above optimization instances were solved with the GUROBI solver.
 
-inferringGeneContent
+### inferringGeneContent
+Containing the source code for inferring ancestor genome gene order. Each block contains multi-copies in sub current genomes. This step is intend to infer the possible ancestral gene order in ancestors.
+
+
+
 
