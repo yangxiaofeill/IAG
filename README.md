@@ -13,8 +13,6 @@ packges  | version|
 --------- | --------|
 numpy  | 1.16.4 |
 pandas  | 0.20.3 |
-scipy  | 1.2.0 |
-scikit-learn  | 0.21.3 |
-matplotlib  | 3.0.3 |
 networkx | 2.1 |
-gensim | 3.4.0 |
+
+[Gurobi 9.0.2](https://www.gurobi.com)
