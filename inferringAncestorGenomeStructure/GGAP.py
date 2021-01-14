@@ -204,8 +204,8 @@ class GGAP:
             for j in range(len(sequence)):
                 if sequence[j] != 0:
                     nonZero.append(j + ranges[0])
-            if ranges[0] not in nonZero:
-                nonZero.append(ranges[0])
+            # if ranges[0] not in nonZero:
+            #     nonZero.append(ranges[0])
             candidate_adjacency.append(nonZero)
         vector_symmetry_value = []
         for i in symmetry_vector.keys():
