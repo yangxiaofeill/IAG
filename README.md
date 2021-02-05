@@ -37,7 +37,7 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 
 * block files which is the block order and direction of three species. P. rhoeas(PR), P. somniferum(PS) and P. setigerum(PT).
 
-* multi-synteny files which is the block gene content in multi-copies with the homo gene ID and the gene name.
+* multi-synteny files which is the block gene content in multi-copies with the pPG ID and gene name.
 
 ### outputFiles
 
