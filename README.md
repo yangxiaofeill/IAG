@@ -37,7 +37,7 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 
 * block files which is the block order and direction of three species. P. rhoeas(PR), P. somniferum(PS) and P. setigerum(PT).
 
-* multi-synteny files which is the block gene content in multi-copies with the pPG ID and gene name.
+* multi-synteny files which is the block gene content in multi-copies with the pPG ID (putative protogene, ortholog gene groups) and gene name.
 
 ### outputFiles
 
@@ -48,13 +48,13 @@ Containing the source code for inferring ancestor genome gene order. Each block 
 
 * 4_block_gene_content: contains the inferred ancestor block gene content. 
 ```Bash
-*_synteny_ps.txt: ancestor's block gene order. The number is homo gene ID.
+*_synteny_ps.txt: ancestor's block gene order. The number is pPG ID.
 ```
 ```Bash
 *_synteny.name_ps.txt: ancestor's block gene order with gene name.
 ```
 ```Bash
-*_synteny.genename_ps.txt: all gene name represent by same homo gene ID.
+*_synteny.genename_ps.txt: all gene name represent by same pPG ID.
 ```
 han corresponds to PS_preWGD_ancestor.block and dan corresponds to PS_postWGD_ancestor.block.withbar.
 
