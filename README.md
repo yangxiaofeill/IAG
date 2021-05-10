@@ -1,5 +1,5 @@
 # IAG for three Papaver species
-To figure out what genome structural changes occured to shape the present-day karyotypes of three Papaver species. We developed a novel bottom-up framework IAG (inferring ancestor genome) to reconstruct pre- and post-WGD-1 ancestors of Papaver genomes. This is a pipline only for Papaver species. And a more user-friendly version and article are in developing.
+To figure out what genome structural changes occured to shape the present-day karyotypes of three Papaver species. We developed a novel bottom-up workflow IAG (inferring ancestor genome) to reconstruct pre- and post-WGD-1 ancestors of three Papaver genomes. 
 
 ## Dependencies
 python 3.6.4
