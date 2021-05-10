@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import copy
 from dataSturcture.adjacencyMatrix import AdjacencyMatrix
-from util.transformToAdjacency import transformToAdjacency
+
 
 class GGAP:
     def __init__(self, adjacency_file,species_list,duptype=2):
@@ -204,8 +204,8 @@ class GGAP:
             for j in range(len(sequence)):
                 if sequence[j] != 0:
                     nonZero.append(j + ranges[0])
-            # if ranges[0] not in nonZero:
-            #     nonZero.append(ranges[0])
+            if ranges[0] not in nonZero:
+                nonZero.append(ranges[0])
             candidate_adjacency.append(nonZero)
         vector_symmetry_value = []
         for i in symmetry_vector.keys():

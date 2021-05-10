@@ -1,11 +1,10 @@
-# 1、构建结构
 from inferringAncestorGenomeStructure.MatchingOptimization import MatchingOptimization
 from inferringAncestorGenomeStructure.GGAP import GGAP
 from util.transformToAdjacency import transformToAdjacency
 from inferringAncestorGenomeStructure.GMP import GMP
 from inferringGeneContent.GeneContentBuilder import *
 
-# need to replace
+
 workdir = 'D:/InferAncestorGenome/DCW_HN1_YMR_newpair/IAG/'
 in_workdir = workdir + 'inputFiles/'
 out_workdir = workdir + 'outputFiles/'

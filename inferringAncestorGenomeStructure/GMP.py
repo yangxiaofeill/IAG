@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import copy
 from dataSturcture.adjacencyMatrix import AdjacencyMatrix
-from util.transformToAdjacency import transformToAdjacency
 
 
 class GMP:
